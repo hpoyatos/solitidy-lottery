@@ -1,11 +1,11 @@
-pragma solidity ^0.4.21;
+pragma solidity ^0.4.24;
 
 
 contract Lottery {
     address private manager;
     address[] private players;
 
-    function Lottery() public {
+    constructor() public {
         manager = msg.sender;
     }
 
@@ -17,7 +17,7 @@ contract Lottery {
 
     function pickWinner() public restricted {
         uint index = random() % players.length;
-        players[index].transfer(this.balance);
+        players[index].transfer(address(this).balance);
         players = new address[](0);
     }
 
@@ -31,6 +31,6 @@ contract Lottery {
     }
 
     function random() private view returns (uint) {
-        return uint(keccak256(block.difficulty, now, players));
+        return uint(keccak256(abi.encodePacked(block.difficulty, now, players)));
     }
 }
